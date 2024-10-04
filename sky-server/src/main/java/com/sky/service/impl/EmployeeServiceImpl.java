@@ -16,6 +16,8 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
     @Autowired
     private EmployeeMapper employeeMapper;
 
@@ -107,6 +110,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = page.getTotal();
         List<Employee> records = page.getResult();
         return new PageResult(total, records);
+    }
+
+    /**
+     * 设置员工账号状态
+     * @param status
+     * @param id
+     */
+    @Override
+    public void setStatus(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
     }
 
 }
