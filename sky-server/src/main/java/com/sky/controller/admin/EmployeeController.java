@@ -113,4 +113,17 @@ public class EmployeeController {
         employeeService.setStatus(status, id);
         return Result.success();
     }
+
+    /**
+     * 根据 id 查询员工
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工")
+    public Result<Employee> getById(@PathVariable Long id) {
+        log.info("根据id查询员工：{}", id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
 }
