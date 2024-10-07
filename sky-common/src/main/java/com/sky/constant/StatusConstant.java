@@ -1,7 +1,5 @@
 package com.sky.constant;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
-
 import java.util.Objects;
 
 /**
