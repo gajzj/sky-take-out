@@ -1,8 +1,12 @@
 package com.sky.constant;
 
-import java.util.Objects;
+
 
 // TODO: 这个状态用枚举写更优
+import ch.qos.logback.classic.spi.IThrowableProxy;
+
+import java.util.Objects;
+
 /**
  * 状态常量，启用或者禁用
  */
