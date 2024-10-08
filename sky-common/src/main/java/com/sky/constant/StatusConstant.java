@@ -1,5 +1,8 @@
 package com.sky.constant;
 
+
+
+// TODO: 这个状态用枚举写更优
 import ch.qos.logback.classic.spi.IThrowableProxy;
 
 import java.util.Objects;
