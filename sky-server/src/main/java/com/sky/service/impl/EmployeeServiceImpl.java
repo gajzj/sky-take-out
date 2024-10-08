@@ -59,7 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
 
-        if (employee.getStatus() == StatusConstant.DISABLE) {
+        if (employee.getStatus() == StatusConstant.DISABLE) { // TODO: 这里的比较有潜在问题，比较 intvalue 并且检查 null 或者 equals 才对
             //账号被锁定
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
         }
