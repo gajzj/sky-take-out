@@ -10,6 +10,7 @@ import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.entity.Setmeal;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.SetmealEnableFailedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
@@ -93,7 +94,12 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public void setStatus(Integer status, Long id) {
-        // TODO: 检查状态是否合法
+
+        if (!status.equals(StatusConstant.ENABLE) && !status.equals(StatusConstant.DISABLE)) {
+            // 传递的状态参数错误
+            throw new SetmealEnableFailedException(MessageConstant.STATUS_ERROR);
+        }
+
         Dish dish = Dish.builder()
                 .id(id)
                 .status(status)
