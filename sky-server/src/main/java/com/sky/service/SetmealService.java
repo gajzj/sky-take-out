@@ -11,4 +11,10 @@ public interface SetmealService {
      * @return
      */
     PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 批量删除套餐和套餐菜品关联信息
+     * @param ids
+     */
+    void deleteBatch(Integer[] ids);
 }
