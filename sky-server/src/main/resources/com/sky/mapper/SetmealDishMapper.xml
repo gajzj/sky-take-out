@@ -2,11 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealDishMapper">
-
+    <!-- 根据套餐 id 批量删除对应套餐菜品记录 -->
+    <delete id="deleteBySetmealIds">
+        delete from setmeal_dish where setmeal_id in
+        <foreach collection="setmealIds" item="setmealId" open="(" separator="," close=")">
+            #{setmealId}
+        </foreach>
+    </delete>
+    <!-- 根据菜品 id 查询对应的套餐 id -->
     <select id="getSetmealIdsByDishIds" resultType="java.lang.Long">
-        select id
-        from setmeal_dish
-        where id in
+        select id from setmeal_dish where dish_id in
         <foreach collection="dishIds" item="dishId" open="(" separator="," close=")">
             #{dishId}
         </foreach>
