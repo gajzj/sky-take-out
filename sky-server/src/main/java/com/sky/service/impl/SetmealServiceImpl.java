@@ -77,8 +77,11 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.update(setmeal);
         setmealDishMapper.deleteBySetmealIds(Collections.singletonList(setmeal.getId()));
 
+        // 注意这里前端没有给 list 里的 setmealDish 传递 setmealId，需要自己设置
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        Long setmealId = setmealDTO.getId();
         for (SetmealDish setmealDish : setmealDishes) {
+            setmealDish.setSetmealId(setmealId);
             setmealDishMapper.insert(setmealDish);
         }
     }
