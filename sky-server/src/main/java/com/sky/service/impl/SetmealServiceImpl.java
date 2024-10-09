@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -56,7 +58,7 @@ public class SetmealServiceImpl implements SetmealService {
     }
 
     @Override
-    public SetmealVO getById(Long id) {
+    public SetmealVO getByIdWithSetmealDishes(Long id) {
         Setmeal setmeal = setmealMapper.getById(id);
         SetmealVO setmealVO = new SetmealVO();
 
@@ -66,5 +68,18 @@ public class SetmealServiceImpl implements SetmealService {
         setmealVO.setSetmealDishes(setmealDishes);
 
         return setmealVO;
+    }
+
+    @Override
+    public void updateWithSetmealDishes(SetmealDTO setmealDTO) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+        setmealMapper.update(setmeal);
+        setmealDishMapper.deleteBySetmealIds(Collections.singletonList(setmeal.getId()));
+
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        for (SetmealDish setmealDish : setmealDishes) {
+            setmealDishMapper.insert(setmealDish);
+        }
     }
 }

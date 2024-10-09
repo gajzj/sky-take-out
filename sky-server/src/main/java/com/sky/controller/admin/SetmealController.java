@@ -1,7 +1,7 @@
 package com.sky.controller.admin;
 
+import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
-import com.sky.entity.Setmeal;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.SetmealService;
@@ -58,9 +58,21 @@ public class SetmealController {
     @ApiOperation("根据id查询套餐")
     public Result<SetmealVO> getById(@PathVariable Long id) {
         log.info("根据id查询套餐: {}", id);
-        SetmealVO setmealVO = setmealService.getById(id);
+        SetmealVO setmealVO = setmealService.getByIdWithSetmealDishes(id);
         return Result.success(setmealVO);
     }
 
 
+    /**
+     *  修改套餐
+     * @param setmealDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改套餐")
+    public Result<String> update(@RequestBody SetmealDTO setmealDTO) {
+        log.info("修改套餐: id={}, setmealDishes={}", setmealDTO.getId(), setmealDTO.getSetmealDishes());
+        setmealService.updateWithSetmealDishes(setmealDTO);
+        return Result.success();
+    }
 }
