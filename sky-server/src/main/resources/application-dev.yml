@@ -12,3 +12,8 @@ sky:
     access-key-id: LTAI5t9RLSbHseyzVjZHgx5q
     access-key-secret: Nod7qMlR13tXQyYoiRB8DFspDsX5ei
     bucket-name: gajzj-tlias
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 10
