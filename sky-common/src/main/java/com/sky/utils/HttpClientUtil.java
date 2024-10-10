@@ -169,6 +169,7 @@ public class HttpClientUtil {
 
         return resultString;
     }
+
     private static RequestConfig builderRequestConfig() {
         return RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_MSEC)
