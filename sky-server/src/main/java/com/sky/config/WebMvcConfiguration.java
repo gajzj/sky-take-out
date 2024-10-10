@@ -1,8 +1,10 @@
 package com.sky.config;
 
 import com.sky.interceptor.JwtTokenAdminInterceptor;
+import com.sky.interceptor.JwtTokenUserInterceptor;
 import com.sky.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -20,6 +23,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +34,7 @@ import java.util.List;
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
-    private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+    private HandlerInterceptor[] interceptors;
 
     /**
      * 注册自定义拦截器
@@ -39,9 +43,24 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      */
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
-        registry.addInterceptor(jwtTokenAdminInterceptor)
-                .addPathPatterns("/admin/**")
-                .excludePathPatterns("/admin/employee/login");
+        for (HandlerInterceptor interceptor : interceptors) {
+            List<String> addPaths = new ArrayList<>();
+            List<String> excludePaths = new ArrayList<>();
+            if (interceptor instanceof JwtTokenAdminInterceptor) {
+                addPaths.add("/admin/**");
+                excludePaths.add("/admin/employee/login");
+            } else if (interceptor instanceof JwtTokenUserInterceptor) {
+                addPaths.add("/user/**");
+                excludePaths.add("/user/user/login");
+                excludePaths.add("/user/shop/status");
+            } else {
+                log.warn("未知的拦截器，请手动未其配置映射路径: {}", interceptor.getClass().getSimpleName());
+                continue;
+            }
+            registry.addInterceptor(interceptor)
+                    .addPathPatterns(addPaths)
+                    .excludePathPatterns(excludePaths);
+        }
     }
 
     @Bean
