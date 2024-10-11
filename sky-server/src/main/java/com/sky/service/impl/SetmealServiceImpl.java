@@ -15,14 +15,17 @@ import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,13 +40,12 @@ public class SetmealServiceImpl implements SetmealService {
     @Override
     public PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO) {
         PageHelper.startPage(setmealPageQueryDTO.getPage(), setmealPageQueryDTO.getPageSize());
-        try {
-            Page<SetmealVO> page = setmealMapper.pageQuery(setmealPageQueryDTO);
-            return new PageResult(page.getTotal(), page.getResult());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
+
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealPageQueryDTO, setmeal);
+        Page<SetmealVO> page = setmealMapper.list(setmeal);
+
+        return new PageResult(page.getTotal(), page.getResult());
     }
 
     @Override
@@ -99,5 +101,30 @@ public class SetmealServiceImpl implements SetmealService {
                 .status(status)
                 .build();
         setmealMapper.update(setmeal);
+    }
+
+    /**
+     * 条件查询
+     * @param setmeal
+     * @return
+     */
+    public List<Setmeal> list(Setmeal setmeal) {
+        List<SetmealVO> list = setmealMapper.list(setmeal);
+        return list.stream()
+                .map(setmealVO -> {
+                    Setmeal sm = new Setmeal();
+                    BeanUtils.copyProperties(setmealVO, sm);
+                    return sm;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据id查询菜品选项
+     * @param id
+     * @return
+     */
+    public List<DishItemVO> getDishItemById(Long id) {
+        return setmealMapper.getDishItemBySetmealId(id); // TODO
     }
 }
